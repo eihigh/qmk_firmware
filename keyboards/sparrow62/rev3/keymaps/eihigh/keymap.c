@@ -56,9 +56,9 @@ enum layer_number {
 enum custom_keycodes {
     MACRO1 = SAFE_RANGE,
     MACRO2,
-    IMEON,
-    IMEOFF,
-    ESCIMEOFF,
+    IMON,
+    IMOFF,
+    ESCIMOFF,
 
     // まったく同じ機能を持つキーコードがあるけどそれらがコンボ判定に引っかからないように独立して定義
     JP_A,
@@ -69,7 +69,7 @@ enum custom_keycodes {
     JP_SLSH,
     JP_Q,
     JP_EXLM,
-    JP_PERC,
+    JP_X,
     JP_COMM,
     JP_DOT,
 
@@ -210,19 +210,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             SEND_STRING("???");
             break;
         case MACRO2:
-            SEND_STRING("!!!");
+            SEND_STRING("???");
             break;
-        case IMEON:
+        case IMON:
             // send Lang1 and enable Shingeta layer
             tap_code16(KC_LNG1);
             layer_on(_LAYER_SHINGETA);
             break;
-        case IMEOFF:
+        case IMOFF:
             // send Lang2 and disable Shingeta layer
             tap_code16(KC_LNG2);
             layer_off(_LAYER_SHINGETA);
             break;
-        case ESCIMEOFF:
+        case ESCIMOFF:
             // send Esc and Lang2, disable Shingeta layer
             tap_code16(KC_ESC);
             tap_code16(KC_LNG2);
@@ -234,9 +234,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case JP_E: tap_code16(KC_E); break;
         case JP_O: tap_code16(KC_O); break;
         case JP_Q: tap_code16(KC_Q); break;
+        case JP_X: tap_code16(KC_X); break;
         case JP_SLSH: tap_code16(KC_SLSH); break;
         case JP_EXLM: tap_code16(KC_EXLM); break;
-        case JP_PERC: tap_code16(KC_PERC); break;
         case JP_COMM: tap_code16(KC_COMM); break;
         case JP_DOT: tap_code16(KC_DOT); break;
         case JP_KA: tap_code16(KC_K); tap_code16(KC_A); break;
@@ -367,7 +367,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_BASE] = LAYOUT(
     // /-------+-------+-------+-------+-------+-------\                 /-------+-------+-------+-------+-------+-------.
-        ESCIMEOFF ,_______,KC_LGUI,KC_LCTL,KC_LALT,_______,                  _______,KC_RALT,KC_RCTL,KC_RGUI,_______,KC_BSPC,
+        ESCIMOFF,_______,KC_LGUI,KC_LCTL,KC_LALT,_______,                  _______,KC_RALT,KC_RCTL,KC_RGUI,_______,KC_BSPC,
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
         KC_Q   ,KC_Y   ,KC_P   ,KC_O   ,KC_U   ,KC_J   ,_______,  _______,KC_K   ,KC_D   ,KC_L   ,KC_C   ,KC_W   ,KC_Z   ,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
@@ -386,7 +386,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
         JP_EXLM,JP_NO  ,JP_TO  ,JP_KA  ,JP_NN  ,JP_XTU ,_______,  _______,JP_KU  ,JP_U   ,JP_I   ,JP_SI  ,JP_NA  ,KC_BSPC,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        JP_PERC,JP_SU  ,JP_MA  ,JP_KI  ,JP_RU  ,JP_TU  ,_______,  _______,JP_BA  ,JP_TA  ,JP_DE  ,JP_DOT ,JP_BU  ,KC_X   ,
+        JP_X   ,JP_SU  ,JP_MA  ,JP_KI  ,JP_RU  ,JP_TU  ,_______,  _______,JP_BA  ,JP_TA  ,JP_DE  ,JP_DOT ,JP_BU  ,_______,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
                                 _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/  \------+-------+-------+-------/
@@ -412,7 +412,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
         _______,A(KC_ENT),C(KC_ENT),G(KC_ENT),S(KC_ENT),_______,_______,  _______,_______,KC_HOME,KC_UP  ,KC_END ,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,ESCIMEOFF ,KC_TAB ,KC_ENT ,IMEOFF ,_______,_______,  _______,IMEON  ,KC_LEFT,KC_DOWN,KC_RGHT,_______,_______,
+        _______,ESCIMOFF,KC_TAB,KC_ENT ,IMOFF  ,_______,_______,  _______,IMON   ,KC_LEFT,KC_DOWN,KC_RGHT,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
         _______,G(KC_Z),G(KC_X),G(KC_C),G(KC_V),_______,_______,  _______,_______,_______,_______,_______,_______,_______,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
@@ -424,11 +424,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // /-------+-------+-------+-------+-------+-------\                 /-------+-------+-------+-------+-------+-------.
         _______,_______,_______,_______,_______,_______,                  _______,_______,_______,_______,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
-        _______,_______,_______,_______,_______,_______,_______,  _______,_______,_______,_______,_______,_______,_______,
+        _______,_______,_______,_______,_______,_______,_______,  _______,_______,KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,_______,_______,_______,_______,_______,_______,  _______,_______,_______,_______,_______,_______,_______,
+        _______,_______,_______,_______,_______,_______,_______,  _______,_______,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,_______,_______,_______,_______,_______,_______,  _______,_______,_______,_______,_______,_______,_______,
+        _______,_______,_______,_______,_______,_______,_______,  _______,_______,KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,_______,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
                                 _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/ \-------+-------+-------+-------/
@@ -456,7 +456,7 @@ const uint16_t PROGMEM combo_zi[]  = {MNS, JP_TO, COMBO_END };
 const uint16_t PROGMEM combo_re[]  = {MNS, JP_KA, COMBO_END };
 const uint16_t PROGMEM combo_mo[]  = {MNS, JP_NN, COMBO_END };
 const uint16_t PROGMEM combo_yu[]  = {MNS, JP_XTU, COMBO_END };
-const uint16_t PROGMEM combo_xya[] = {MNS, JP_PERC, COMBO_END };
+const uint16_t PROGMEM combo_xya[] = {MNS, JP_X, COMBO_END };
 const uint16_t PROGMEM combo_du[]  = {MNS, JP_SU, COMBO_END };
 const uint16_t PROGMEM combo_zo[]  = {MNS, JP_MA, COMBO_END };
 const uint16_t PROGMEM combo_bo[]  = {MNS, JP_KI, COMBO_END };
@@ -493,7 +493,7 @@ const uint16_t PROGMEM combo_sa[]  = {MKS, JP_TO, COMBO_END };
 // const uint16_t PROGMEM combo_o2[]  = {MKS, JP_KA, COMBO_END };
 const uint16_t PROGMEM combo_ri[]  = {MKS, JP_NN, COMBO_END };
 const uint16_t PROGMEM combo_zu[]  = {MKS, JP_XTU, COMBO_END };
-const uint16_t PROGMEM combo_mya[] = {MKS, JP_PERC, COMBO_END };
+const uint16_t PROGMEM combo_mya[] = {MKS, JP_X, COMBO_END };
 const uint16_t PROGMEM combo_ze[]  = {MKS, JP_SU, COMBO_END };
 const uint16_t PROGMEM combo_za[]  = {MKS, JP_MA, COMBO_END };
 const uint16_t PROGMEM combo_gi[]  = {MKS, JP_KI, COMBO_END };
@@ -527,7 +527,7 @@ const uint16_t PROGMEM combo_ryo[] = {MNJS, JP_EXLM, COMBO_END };
 const uint16_t PROGMEM combo_hyo[] = {MNJS, JP_NO, COMBO_END };
 const uint16_t PROGMEM combo_kyo[] = {MNJS, JP_NN, COMBO_END };
 const uint16_t PROGMEM combo_tyo[] = {MNJS, JP_XTU, COMBO_END };
-const uint16_t PROGMEM combo_rya[]  = {MNJS, JP_PERC, COMBO_END };
+const uint16_t PROGMEM combo_rya[]  = {MNJS, JP_X, COMBO_END };
 const uint16_t PROGMEM combo_hya[] = {MNJS, JP_SU, COMBO_END };
 const uint16_t PROGMEM combo_sya[] = {MNJS, JP_KI, COMBO_END };
 const uint16_t PROGMEM combo_kya[] = {MNJS, JP_RU, COMBO_END };
@@ -543,7 +543,7 @@ const uint16_t PROGMEM combo_pyo[] = {MKJS, JP_EXLM, COMBO_END };
 const uint16_t PROGMEM combo_byo[] = {MKJS, JP_NO, COMBO_END };
 const uint16_t PROGMEM combo_gyo[] = {MKJS, JP_NN, COMBO_END };
 const uint16_t PROGMEM combo_nyo[] = {MKJS, JP_XTU, COMBO_END };
-const uint16_t PROGMEM combo_pya[]  = {MKJS, JP_PERC, COMBO_END };
+const uint16_t PROGMEM combo_pya[]  = {MKJS, JP_X, COMBO_END };
 const uint16_t PROGMEM combo_bya[] = {MKJS, JP_SU, COMBO_END };
 const uint16_t PROGMEM combo_zya[] = {MKJS, JP_KI, COMBO_END };
 const uint16_t PROGMEM combo_gya[] = {MKJS, JP_RU, COMBO_END };
