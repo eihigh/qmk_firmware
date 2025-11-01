@@ -1,0 +1,4 @@
+VIA_ENABLE = no
+OLED_ENABLE = no
+LTO_ENABLE = yes
+COMBO_ENABLE = yes
