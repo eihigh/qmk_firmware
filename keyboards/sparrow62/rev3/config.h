@@ -15,6 +15,3 @@
 
 // 右手左側の追加4キーオプション使用時は1にする
 #define USE_RIGHT_4KEYS 0
-
-#define HOLD_ON_OTHER_KEY_PRESS
-#define QUICK_TAP_TERM 0
