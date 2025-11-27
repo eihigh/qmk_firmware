@@ -5,11 +5,29 @@
 
 ベース
 q y p o u j k d l c w z
-' i n e a , m h t s r Bs
+? i n e a , m h t s r Bs
 % / ! \ . ; b f g v x `
 
+親指 (thumb cluster)
+X   X   NAV EXT   SYM X   X
+
+SYM
+m1 | [ ] $ + # " < > ' @
+^  & { } - : * _ ( ) = Bs
+m2 9 8 7 6 5 0 1 2 3 4 ~
+
+NAV
+    1⌥  1⌘  1^  1⇧         Home ↑  End
+    Esc Tab Cr  Eisu ^↑    ←    ↓  →   Kana Bs
+    ⌘z  ⌘x  ⌘c  ⌘v  ⌘⇧v   ⏪   ▶ ️ ⏩
+
+EXT
+    閉開        F1 F2  F3  F4
+  左戻進右      F5 F6  F7  F8
+                F9 F10 F11 F12
+
 shingataレイヤー
-・！には、ちぐてこがひげ
+！？には、ちぐてこがひげ
 ーのとかんっくういしなBs
 x すまきるつばたで。ぶヴ
 
@@ -32,35 +50,22 @@ x すまきるつばたで。ぶヴ
 ﾋﾟｭﾋﾞｭｼﾞｭｼﾞｮｷﾞｭﾆｭ
 ﾋﾟｮﾋﾞｮ      ｷﾞｮﾆｮ
 ﾋﾟｬﾋﾞｬ      ｷﾞｬﾆｬ
-
-記号数字レイヤー
-m1 | [ ] $ + # " < > ^ @
-?  & { } - : * _ ( ) = Bs
-m2 9 8 7 6 5 0 1 2 3 4
-
-制御レイヤー
-  1⇧  1^  1⌘  1⌥   Home ↑ End
-  Esc Tab Cr  Kana ←    ↓ →   Eisu
-  ⌘z  ⌘x ⌘c  ⌘v
 */
 
 enum layer_number {
     LAYER_BASE = 0,
     LAYER_SHINGETA = 1,
-    LAYER_SYMNUM = 2,
-    LAYER_CTRL = 3,
-    LAYER_GUI = 4,
-    LAYER_OTHERS = 5,
-    LAYER_SHIFT = 6,
-};
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, LAYER_SYMNUM, LAYER_CTRL, LAYER_SHIFT);
+    LAYER_SYM = 2,
+    LAYER_NAV = 3,
+    LAYER_EXT = 4,
+    LAYER_SHIFT = 5,
 };
 
 enum custom_keycodes {
     MACRO1 = SAFE_RANGE,
     MACRO2,
+
+    // 日本語レイヤー切り替えを伴うキー
     KANA,
     EISU,
     ESCEISU,
@@ -75,8 +80,8 @@ enum custom_keycodes {
     JP_COMM,
     JP_DOT,
     JP_MINS,
+    JP_QUES,
     JP_EXLM,
-    JP_SLSH,
 
     // ローマ字入力のためのキーシーケンス
     JP_KA,
@@ -214,8 +219,8 @@ enum custom_keycodes {
 #define MKJS JP_GA // Migi Kusuriyubi Jodan Shift
 
 // 右中指コンボ
-const uint16_t PROGMEM combo_xyu[] = {MNS, JP_SLSH, COMBO_END };
-const uint16_t PROGMEM combo_che[] = {MNS, JP_EXLM, COMBO_END };
+const uint16_t PROGMEM combo_xyu[] = {MNS, JP_EXLM, COMBO_END };
+const uint16_t PROGMEM combo_che[] = {MNS, JP_QUES, COMBO_END };
 const uint16_t PROGMEM combo_go[]  = {MNS, JP_NI, COMBO_END };
 const uint16_t PROGMEM combo_hu[]  = {MNS, JP_HA, COMBO_END };
 const uint16_t PROGMEM combo_she[] = {MNS, JP_COMM, COMBO_END };
@@ -252,8 +257,8 @@ const uint16_t PROGMEM combo_fi[]  = {HNS, JP_BU, COMBO_END };
 const uint16_t PROGMEM combo_vi[]  = {HNS, JP_VU, COMBO_END };
 
 // 右薬指コンボ
-const uint16_t PROGMEM combo_ryu[] = {MKS, JP_SLSH, COMBO_END };
-const uint16_t PROGMEM combo_di[]  = {MKS, JP_EXLM, COMBO_END };
+const uint16_t PROGMEM combo_ryu[] = {MKS, JP_EXLM, COMBO_END };
+const uint16_t PROGMEM combo_di[]  = {MKS, JP_QUES, COMBO_END };
 const uint16_t PROGMEM combo_me[]  = {MKS, JP_NI, COMBO_END };
 const uint16_t PROGMEM combo_ke[]  = {MKS, JP_HA, COMBO_END };
 const uint16_t PROGMEM combo_je[]  = {MKS, JP_COMM, COMBO_END };
@@ -290,8 +295,8 @@ const uint16_t PROGMEM combo_fo[] = {HKS, JP_BU, COMBO_END };
 const uint16_t PROGMEM combo_vo[] = {HKS, JP_VU, COMBO_END };
 
 // 右中指上段コンボ
-const uint16_t PROGMEM combo_myu[] = {MNJS, JP_SLSH, COMBO_END };
-const uint16_t PROGMEM combo_hyu[] = {MNJS, JP_EXLM, COMBO_END };
+const uint16_t PROGMEM combo_myu[] = {MNJS, JP_EXLM, COMBO_END };
+const uint16_t PROGMEM combo_hyu[] = {MNJS, JP_QUES, COMBO_END };
 const uint16_t PROGMEM combo_syu[] = {MNJS, JP_NI, COMBO_END };
 const uint16_t PROGMEM combo_syo[] = {MNJS, JP_HA, COMBO_END };
 const uint16_t PROGMEM combo_kyu[] = {MNJS, JP_COMM, COMBO_END };
@@ -306,8 +311,8 @@ const uint16_t PROGMEM combo_sya[] = {MNJS, JP_KI, COMBO_END };
 const uint16_t PROGMEM combo_kya[] = {MNJS, JP_RU, COMBO_END };
 const uint16_t PROGMEM combo_tya[] = {MNJS, JP_TU, COMBO_END };
 // 右薬指上段コンボ
-const uint16_t PROGMEM combo_pyu[] = {MKJS, JP_SLSH, COMBO_END };
-const uint16_t PROGMEM combo_byu[] = {MKJS, JP_EXLM, COMBO_END };
+const uint16_t PROGMEM combo_pyu[] = {MKJS, JP_EXLM, COMBO_END };
+const uint16_t PROGMEM combo_byu[] = {MKJS, JP_QUES, COMBO_END };
 const uint16_t PROGMEM combo_zyu[] = {MKJS, JP_NI, COMBO_END };
 const uint16_t PROGMEM combo_zyo[] = {MKJS, JP_HA, COMBO_END };
 const uint16_t PROGMEM combo_gyu[] = {MKJS, JP_COMM, COMBO_END };
@@ -490,8 +495,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case JP_COMM: tap_code16(KC_COMM); break;
         case JP_DOT: tap_code16(KC_DOT); break;
         case JP_MINS: tap_code16(KC_MINS); break;
+        case JP_QUES: tap_code16(KC_QUES); break;
         case JP_EXLM: tap_code16(KC_EXLM); break;
-        case JP_SLSH: tap_code16(KC_SLSH); break;
         case JP_KA: tap_code16(KC_K); tap_code16(KC_A); break;
         case JP_KI: tap_code16(KC_K); tap_code16(KC_I); break;
         case JP_KU: tap_code16(KC_K); tap_code16(KC_U); break;
@@ -616,9 +621,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-#define LT2_SPC LT(LAYER_SYMNUM, KC_SPC)
-#define LT3_SPC LT(LAYER_CTRL, KC_SPC)
-#define LT4_RC  LT(LAYER_GUI, KC_MS_BTN2)
+#define SYM_SPC LT(LAYER_SYM, KC_SPC)
+#define NAV_SPC LT(LAYER_NAV, KC_SPC)
+#define EXT_MB2 LT(LAYER_EXT, KC_MS_BTN2)
 #define LCLICK  KC_MS_BTN1
 #define OS_LSFT OSM(MOD_LSFT)
 #define OS_LALT OSM(MOD_LALT)
@@ -639,11 +644,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
         KC_Q   ,KC_Y   ,KC_P   ,KC_O   ,KC_U   ,KC_J   ,_______,  _______,KC_K   ,KC_D   ,KC_L   ,KC_C   ,KC_W   ,KC_Z   ,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        KC_QUOT,KC_I   ,KC_N   ,KC_E   ,KC_A   ,KC_COMM,LCLICK ,  _______,KC_M   ,KC_H   ,KC_T   ,KC_S   ,KC_R   ,KC_BSPC,
+        KC_QUES,KC_I   ,KC_N   ,KC_E   ,KC_A   ,KC_COMM,KC_SPC ,  _______,KC_M   ,KC_H   ,KC_T   ,KC_S   ,KC_R   ,KC_BSPC,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        KC_PERC,KC_SLSH,KC_EXLM,KC_BSLS,KC_DOT ,KC_SCLN,_______,  _______,KC_B   ,KC_F   ,KC_G   ,KC_V   ,KC_X   ,KC_GRV ,
+        KC_PERC,KC_SLSH,KC_EXLM,KC_BSLS,KC_DOT ,KC_SCLN,LCLICK ,  _______,KC_B   ,KC_F   ,KC_G   ,KC_V   ,KC_X   ,KC_GRV ,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
-                                _______,KC_LSFT,LT3_SPC,LT4_RC,   _______,LT2_SPC,MO(LAYER_OTHERS),KC_RALT
+                                _______,_______,NAV_SPC,EXT_MB2,  _______,SYM_SPC,_______,_______
     //                         \-------+-------+-------+-------/  \------+-------+-------+-------/
     ),
 
@@ -651,7 +656,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // /-------+-------+-------+-------+-------+-------\                 /-------+-------+-------+-------+-------+-------.
         _______,_______,_______,_______,_______,_______,                  _______,_______,_______,_______,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
-        JP_SLSH,JP_EXLM,JP_NI  ,JP_HA  ,JP_COMM,JP_TI  ,_______,  _______,JP_GU  ,JP_TE  ,JP_KO  ,JP_GA  ,JP_HI  ,JP_GE  ,
+        JP_EXLM,JP_QUES,JP_NI  ,JP_HA  ,JP_COMM,JP_TI  ,_______,  _______,JP_GU  ,JP_TE  ,JP_KO  ,JP_GA  ,JP_HI  ,JP_GE  ,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
         JP_MINS,JP_NO  ,JP_TO  ,JP_KA  ,JP_NN  ,JP_XTU ,_______,  _______,JP_KU  ,JP_U   ,JP_I   ,JP_SI  ,JP_NA  ,KC_BSPC,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
@@ -661,57 +666,43 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //                         \-------+-------+-------+-------/  \------+-------+-------+-------/
     ),
 
-    [LAYER_SYMNUM] = LAYOUT(
+    [LAYER_SYM] = LAYOUT(
     // /-------+-------+-------+-------+-------+-------\                 /-------+-------+-------+-------+-------+-------.
         _______,_______,_______,_______,_______,_______,                  _______,_______,_______,_______,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
-        MACRO1 ,KC_PIPE,KC_LBRC,KC_RBRC,KC_DLR ,KC_PLUS,_______,  _______,KC_HASH,KC_DQUO,KC_LABK,KC_RABK,KC_CIRC,KC_AT  ,
+        MACRO1 ,KC_PIPE,KC_LBRC,KC_RBRC,KC_DLR ,KC_PLUS,_______,  _______,KC_HASH,KC_DQUO,KC_LABK,KC_RABK,KC_QUOT,KC_AT  ,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        KC_QUES,KC_AMPR,KC_LCBR,KC_RCBR,KC_MINS,KC_COLN,_______,  _______,KC_ASTR,KC_UNDS,KC_LPRN,KC_RPRN,KC_EQL ,_______,
+        KC_CIRC,KC_AMPR,KC_LCBR,KC_RCBR,KC_MINS,KC_COLN,_______,  _______,KC_ASTR,KC_UNDS,KC_LPRN,KC_RPRN,KC_EQL ,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        MACRO2 ,KC_9   ,KC_8   ,KC_7   ,KC_6   ,KC_5   ,_______,  _______,KC_0   ,KC_1   ,KC_2   ,KC_3   ,KC_4   ,_______,
+        MACRO2 ,KC_9   ,KC_8   ,KC_7   ,KC_6   ,KC_5   ,_______,  _______,KC_0   ,KC_1   ,KC_2   ,KC_3   ,KC_4   ,KC_TILD,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
                                 _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/ \-------+-------+-------+-------/
     ),
 
-    [LAYER_CTRL] = LAYOUT(
+    [LAYER_NAV] = LAYOUT(
     // /-------+-------+-------+-------+-------+-------\                 /-------+-------+-------+-------+-------+-------.
         _______,_______,_______,_______,_______,_______,                  _______,_______,_______,_______,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
-        _______,OS_LSFT,OS_LCTL,OS_LGUI,OS_LALT,_______,_______,  _______,_______,KC_HOME,KC_UP  ,KC_END ,_______,_______,
+        _______,OS_LALT,OS_LGUI,OS_LCTL,OS_LSFT,_______,_______,  _______,_______,KC_HOME,KC_UP  ,KC_END ,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,ESCEISU,KC_TAB ,KC_ENT ,KANA   ,_______,_______,  _______,_______,KC_LEFT,KC_DOWN,KC_RGHT,EISU   ,_______,
+        _______,ESCEISU,KC_TAB ,KC_ENT ,EISU   ,_______,_______,  _______,_______,KC_LEFT,KC_DOWN,KC_RGHT,KANA   ,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,G(KC_Z),G(KC_X),G(KC_C),G(KC_V),_______,_______,  _______,_______,_______,_______,_______,_______,_______,
+        _______,G(KC_Z),G(KC_X),G(KC_C),G(KC_V),G(S(KC_V)),_______,  _______,_______,KC_MPRV,KC_MPLY,KC_MNXT,_______,_______,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
                                 _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/ \-------+-------+-------+-------/
     ),
 
-    [LAYER_GUI] = LAYOUT(
+    [LAYER_EXT] = LAYOUT(
     // /-------+-------+-------+-------+-------+-------\                 /-------+-------+-------+-------+-------+-------.
         _______,_______,_______,_______,_______,_______,                  _______,_______,_______,_______,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
-        _______,KC_HOME,NAVBACK,NAVFORW,KC_END ,_______,_______,  _______,_______,MS_WHLU,MS_UP  ,MS_WHLD,_______,_______,
+        _______,_______,CLOSTAB,NEWTAB ,_______,_______,_______,  _______,_______,KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,CLOSTAB,PREVTAB,NEXTTAB,NEWTAB ,MISSCTL,_______,  _______,MS_BTN2,MS_LEFT,MS_DOWN,MS_RGHT,MS_BTN1,_______,
+        _______,PREVTAB,NAVBACK,NAVFORW,NEXTTAB,MISSCTL,_______,  _______,_______,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,G(KC_Z),G(KC_X),G(KC_C),G(KC_V),_______,_______,  _______,_______,_______,_______,_______,_______,_______,
-    // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
-                                _______,_______,_______,_______,  _______,_______,_______,_______
-    //                         \-------+-------+-------+-------/ \-------+-------+-------+-------/
-    ),
-
-    [LAYER_OTHERS] = LAYOUT(
-    // /-------+-------+-------+-------+-------+-------\                 /-------+-------+-------+-------+-------+-------.
-        _______,_______,_______,_______,_______,_______,                  _______,_______,_______,_______,_______,_______,
-    // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
-        _______,KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,_______,_______,  _______,_______,_______,_______,_______,_______,_______,
-    // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,_______,_______,  _______,_______,KC_MPRV,KC_MPLY,KC_MNXT,_______,_______,
-    // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,_______,_______,  _______,_______,_______,_______,_______,_______,_______,
+        _______,_______,_______,_______,_______,_______,_______,  _______,_______,KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,_______,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
                                 _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/ \-------+-------+-------+-------/
@@ -723,11 +714,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
         S(KC_Q),S(KC_Y),S(KC_P),S(KC_O),S(KC_U),S(KC_J),_______,  _______,S(KC_K),S(KC_D),S(KC_L),S(KC_C),S(KC_W),S(KC_Z),
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        KC_QUOT,S(KC_I),S(KC_N),S(KC_E),S(KC_A),KC_COMM,LCLICK ,  _______,S(KC_M),S(KC_H),S(KC_T),S(KC_S),S(KC_R),KC_BSPC,
+        _______,S(KC_I),S(KC_N),S(KC_E),S(KC_A),_______,_______,  _______,S(KC_M),S(KC_H),S(KC_T),S(KC_S),S(KC_R),_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        KC_PERC,KC_SLSH,KC_EXLM,KC_BSLS,KC_DOT ,KC_SCLN,_______,  _______,S(KC_B),S(KC_F),S(KC_G),S(KC_V),S(KC_X),KC_GRV ,
+        _______,_______,_______,_______,_______,_______,_______,  _______,S(KC_B),S(KC_F),S(KC_G),S(KC_V),S(KC_X),_______,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
-                                _______,KC_LSFT,LT3_SPC,LT4_RC,   _______,LT2_SPC,MO(LAYER_OTHERS),KC_RALT
+                                _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/  \------+-------+-------+-------/
     ),
+};
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    return update_tri_layer_state(state, LAYER_SYM, LAYER_NAV, LAYER_SHIFT);
 };
