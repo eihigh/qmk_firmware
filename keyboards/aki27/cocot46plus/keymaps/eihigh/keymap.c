@@ -9,12 +9,11 @@ q y p o u j k d l c w z
 % / ! \ . ; b f g v x `
 
 親指 (thumb cluster)
-           TRACKBALL
-            X    X
-X   X   NAV EXT  MB1 SYM X   X
-         VOL+ MUTE VOL-
+          TRACKBALL
+           MC  RC
+⌥  ⇧  NAV LC   EXT SYM  ^  ⌘
+       VOL+ MUTE VOL-
 
-レイヤーではVOLの代わりにTab/S-Tabになる
 レイヤーではスクロールする
 
 SYM
@@ -23,14 +22,14 @@ m1 | [ ] $ + # " < > ' @
 m2 9 8 7 6 5 0 1 2 3 4 ~
 
 NAV
-    1⌥  1⌘  1^  1⇧         Home ↑  End
-    Esc Tab Cr  Eisu ^↑    ←    ↓  →   Kana Bs
-    ⌘z  ⌘x  ⌘c  ⌘v  ⌘⇧v   ⏪   ▶ ️ ⏩
+ 1⌥   1⌘  1^  1⇧          Home ↑  End
+ Kana Tab Cr  Eisu        ←    ↓  →   Esc Bs
+ ⌘z   ⌘x  ⌘c  ⌘v  ⌘⇧v    ⇧Tab Tab
 
 EXT
-    閉開        F1 F2  F3  F4
-  左戻進右      F5 F6  F7  F8
-                F9 F10 F11 F12
+F1 F2  F3  F4     閉開進
+F5 F6  F7  F8     左右戻
+F9 F10 F11 F12    ^↑
 
 shingataレイヤー
 ！？には、ちぐてこがひげ
@@ -70,6 +69,9 @@ enum layer_number {
 enum custom_keycodes {
     MACRO1 = SAFE_RANGE,
     MACRO2,
+
+    // クリック、スクロールキー
+    EXT_MB1,
 
     // 日本語レイヤー切り替えを伴うキー
     KANA,
@@ -464,7 +466,57 @@ combo_t key_combos[] = {
     COMBO(combo_dhi, JP_DHI),
 };
 
+#if defined(ENCODER_MAP_ENABLE)
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [LAYER_BASE]     = { ENCODER_CCW_CW(C(S(KC_TAB)), C(KC_TAB)) },
+    [LAYER_SHINGETA] = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
+    [LAYER_SYM]      = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
+    [LAYER_NAV]      = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
+    [LAYER_EXT]      = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
+    [LAYER_SHIFT]    = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
+};
+#endif
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+    case LAYER_EXT:
+    case LAYER_NAV:
+        cocot_set_scroll_mode(true);
+        break;
+    default:
+        cocot_set_scroll_mode(false);
+        break;
+    }
+    
+    return update_tri_layer_state(state, LAYER_SYM, LAYER_NAV, LAYER_SHIFT);
+};
+
+#ifdef OLED_ENABLE
+bool oled_task_user(void) {
+    render_logo();
+    oled_write_layer_state();
+    return false;
+}
+#endif
+
+static uint16_t click_timer = 0; // 押下時間を計測するタイマー
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case EXT_MB1:
+            if (record->event.pressed) { // キーを押したとき
+                layer_on(LAYER_EXT);
+                click_timer = timer_read(); // 押下開始時間を記録
+            } else { // キーを離したとき
+                // 押していた時間が TAPPING_TERM より短い場合は「クリック」とみなす
+                if (timer_elapsed(click_timer) < TAPPING_TERM) {
+                    tap_code(KC_MS_BTN1); // クリック送信
+                }
+                layer_off(LAYER_EXT);
+            }
+            return false; // QMK標準のキー処理を行わせない
+    }
+
     // do nothing when key is released
     if (!record->event.pressed) {
         return true;
@@ -639,8 +691,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 #define SYM_SPC LT(LAYER_SYM, KC_SPC)
 #define NAV_SPC LT(LAYER_NAV, KC_SPC)
-#define EXT_MB2 LT(LAYER_EXT, KC_MS_BTN2)
-#define LCLICK  KC_MS_BTN1
 #define OS_LSFT OSM(MOD_LSFT)
 #define OS_LALT OSM(MOD_LALT)
 #define OS_LCTL OSM(MOD_LCTL)
@@ -662,7 +712,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
       KC_PERC, KC_SLSH, KC_EXLM, KC_BSLS,  KC_DOT,  KC_SCLN,                                         KC_B,    KC_F,    KC_G,    KC_V,    KC_X,  KC_GRV,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-                        _______, _______, NAV_SPC,   EXT_MB2, LCLICK,                    _______,  LCLICK, SYM_SPC, _______, _______,  
+                        KC_LALT, KC_LSFT, NAV_SPC, KC_MS_BTN1, KC_MS_BTN3,            KC_MS_BTN2, EXT_MB1, SYM_SPC, KC_LCTL, KC_LGUI,  
                                                              XXXXXXX,     KC_MUTE,       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
                                                             //`--------------'  `--------------'
     ),
@@ -697,9 +747,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
       _______, OS_LALT, OS_LGUI, OS_LCTL, OS_LSFT, _______,                                       _______, KC_HOME,   KC_UP,  KC_END, _______, _______,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      _______, ESCEISU,  KC_TAB,  KC_ENT,    EISU, MISSCTL,                                       _______, KC_LEFT, KC_DOWN, KC_RGHT,    KANA, _______,
+      _______,    KANA,  KC_TAB,  KC_ENT,    EISU, _______,                                       _______, KC_LEFT, KC_DOWN, KC_RGHT, ESCEISU, _______,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(S(KC_V)),                                    _______, KC_MPRV, KC_MPLY, KC_MNXT, _______, _______,
+      _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(S(KC_V)),                                    _______,S(KC_TAB), KC_TAB, _______, _______, _______,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
                         _______, _______, _______,  _______, _______,                    _______, _______, _______, _______, _______,
                                                              XXXXXXX,     _______,       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
@@ -708,11 +758,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [LAYER_EXT] = LAYOUT(
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      _______, _______, CLOSTAB,  NEWTAB, _______, _______,                                       _______,   KC_F1,   KC_F2,   KC_F3,   KC_F4, _______,
+      _______,   KC_F1,   KC_F2,   KC_F3,   KC_F4, _______,                                       CLOSTAB,  NEWTAB, NAVFORW, _______, _______, _______,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      _______, PREVTAB, NAVBACK, NAVFORW, NEXTTAB, _______,                                       _______,   KC_F5,   KC_F6,   KC_F7,   KC_F8, _______,
+      _______,   KC_F5,   KC_F6,   KC_F7,   KC_F8, _______,                                       PREVTAB, NEXTTAB, NAVBACK, _______, _______, _______,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
-      _______, _______, _______, _______, _______, _______,                                       _______,   KC_F9,  KC_F10,  KC_F11,  KC_F12, _______,
+      _______,   KC_F9,  KC_F10,  KC_F11,  KC_F12, _______,                                       MISSCTL, _______, _______, _______, _______, _______,
   //|-------------------------------------------------------|                                   |-------------------------------------------------------|
                         _______, _______, _______,  _______, _______,                    _______, _______, _______, _______, _______,
                                                              XXXXXXX,     _______,       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
@@ -732,38 +782,3 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                             //`--------------'  `--------------'
     ),
 };
-
-#if defined(ENCODER_MAP_ENABLE)
-const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
-    [LAYER_BASE]     = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
-    [LAYER_SHINGETA] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
-    [LAYER_SYM]      = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
-    [LAYER_NAV]      = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
-    [LAYER_EXT]      = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
-    [LAYER_SHIFT]    = { ENCODER_CCW_CW(S(KC_TAB), KC_TAB) },
-};
-#endif
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-    switch (get_highest_layer(state)) {
-    case LAYER_EXT:
-    case LAYER_NAV:
-        cocot_set_scroll_mode(true);
-        break;
-    default:
-        cocot_set_scroll_mode(false);
-        break;
-    }
-    
-    return update_tri_layer_state(state, LAYER_SYM, LAYER_NAV, LAYER_SHIFT);
-};
-
-
-#ifdef OLED_ENABLE
-bool oled_task_user(void) {
-    render_logo();
-    oled_write_layer_state();
-    return false;
-}
-#endif
-

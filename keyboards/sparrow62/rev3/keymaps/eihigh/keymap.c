@@ -9,7 +9,7 @@ q y p o u j k d l c w z
 % / ! \ . ; b f g v x `
 
 親指 (thumb cluster)
-X   X   NAV EXT   SYM X   X
+⌥  ⇧  NAV EXT   SYM  ^  ⌘
 
 SYM
 m1 | [ ] $ + # " < > ' @
@@ -17,14 +17,14 @@ m1 | [ ] $ + # " < > ' @
 m2 9 8 7 6 5 0 1 2 3 4 ~
 
 NAV
-    1⌥  1⌘  1^  1⇧         Home ↑  End
-    Esc Tab Cr  Eisu ^↑    ←    ↓  →   Kana Bs
-    ⌘z  ⌘x  ⌘c  ⌘v  ⌘⇧v   ⏪   ▶ ️ ⏩
+ 1⌥   1⌘  1^  1⇧          Home ↑  End
+ Kana Tab Cr  Eisu        ←    ↓  →   Esc Bs
+ ⌘z   ⌘x  ⌘c  ⌘v  ⌘⇧v    ⇧Tab Tab
 
 EXT
-    閉開        F1 F2  F3  F4
-  左戻進右      F5 F6  F7  F8
-                F9 F10 F11 F12
+F1 F2  F3  F4
+F5 F6  F7  F8
+F9 F10 F11 F12
 
 shingataレイヤー
 ！？には、ちぐてこがひげ
@@ -458,6 +458,10 @@ combo_t key_combos[] = {
     COMBO(combo_dhi, JP_DHI),
 };
 
+layer_state_t layer_state_set_user(layer_state_t state) {
+    return update_tri_layer_state(state, LAYER_SYM, LAYER_NAV, LAYER_SHIFT);
+};
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // do nothing when key is released
     if (!record->event.pressed) {
@@ -623,19 +627,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 #define SYM_SPC LT(LAYER_SYM, KC_SPC)
 #define NAV_SPC LT(LAYER_NAV, KC_SPC)
-#define EXT_MB2 LT(LAYER_EXT, KC_MS_BTN2)
+#define MO_EXT  MO(LAYER_EXT)
 #define LCLICK  KC_MS_BTN1
 #define OS_LSFT OSM(MOD_LSFT)
 #define OS_LALT OSM(MOD_LALT)
 #define OS_LCTL OSM(MOD_LCTL)
 #define OS_LGUI OSM(MOD_LGUI)
-#define PREVTAB C(S(KC_TAB))
-#define NEXTTAB C(KC_TAB)
-#define CLOSTAB G(KC_W)
-#define NEWTAB  G(KC_T)
-#define NAVBACK G(KC_LEFT)
-#define NAVFORW G(KC_RGHT)
-#define MISSCTL C(KC_UP)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [LAYER_BASE] = LAYOUT(
@@ -648,7 +645,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
         KC_PERC,KC_SLSH,KC_EXLM,KC_BSLS,KC_DOT ,KC_SCLN,LCLICK ,  _______,KC_B   ,KC_F   ,KC_G   ,KC_V   ,KC_X   ,KC_GRV ,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
-                                _______,_______,NAV_SPC,EXT_MB2,  _______,SYM_SPC,_______,_______
+                                KC_LALT,KC_LSFT,NAV_SPC,MO_EXT ,  _______,SYM_SPC,KC_LCTL,KC_LGUI
     //                         \-------+-------+-------+-------/  \------+-------+-------+-------/
     ),
 
@@ -686,9 +683,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
         _______,OS_LALT,OS_LGUI,OS_LCTL,OS_LSFT,_______,_______,  _______,_______,KC_HOME,KC_UP  ,KC_END ,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,ESCEISU,KC_TAB ,KC_ENT ,EISU   ,_______,_______,  _______,_______,KC_LEFT,KC_DOWN,KC_RGHT,KANA   ,_______,
+        _______,KANA   ,KC_TAB ,KC_ENT ,EISU   ,_______,_______,  _______,_______,KC_LEFT,KC_DOWN,KC_RGHT,ESCEISU,_______,
     // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,G(KC_Z),G(KC_X),G(KC_C),G(KC_V),G(S(KC_V)),_______,  _______,_______,KC_MPRV,KC_MPLY,KC_MNXT,_______,_______,
+        _______,G(KC_Z),G(KC_X),G(KC_C),G(KC_V),G(S(KC_V)),_______,  _______,_______,S(KC_TAB),KC_TAB,_______,_______,_______,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
                                 _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/ \-------+-------+-------+-------/
@@ -698,11 +695,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // /-------+-------+-------+-------+-------+-------\                 /-------+-------+-------+-------+-------+-------.
         _______,_______,_______,_______,_______,_______,                  _______,_______,_______,_______,_______,_______,
     // |-------+-------+-------+-------+-------+-------+-------\ /-------+-------+-------+-------+-------+-------+-------|
-        _______,_______,CLOSTAB,NEWTAB ,_______,_______,_______,  _______,_______,KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,_______,
-    // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,PREVTAB,NAVBACK,NAVFORW,NEXTTAB,MISSCTL,_______,  _______,_______,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,_______,
-    // |-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------|
-        _______,_______,_______,_______,_______,_______,_______,  _______,_______,KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,_______,
+        _______,KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,_______,_______,  _______,_______,_______,_______,_______,_______,_______,
+    // |-------+-------+-------+-------+-------+--------+-------| |-------+-------+-------+-------+-------+-------+-------|
+        _______,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,_______,_______,  _______,_______,_______,_______,_______,_______,_______,
+    // |-------+-------+-------+-------+-------+--------+-------| |-------+-------+-------+-------+-------+-------+-------|
+        _______,KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,_______,_______,  _______,_______,_______,_______,_______,_______,_______,
     // \-------+-------+-------+-------+-------+-------+-------| |-------+-------+-------+-------+-------+-------+-------/
                                 _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/ \-------+-------+-------+-------/
@@ -721,8 +718,4 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                 _______,_______,_______,_______,  _______,_______,_______,_______
     //                         \-------+-------+-------+-------/  \------+-------+-------+-------/
     ),
-};
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, LAYER_SYM, LAYER_NAV, LAYER_SHIFT);
 };
